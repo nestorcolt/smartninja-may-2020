@@ -1,0 +1,3 @@
+hello ninja
+second line
+a bit longer sentence here

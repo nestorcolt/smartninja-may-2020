@@ -10,7 +10,7 @@ import os
 class GameEngine:
 
     def __init__(self):
-        pass
+        self.attempts = 0
 
     def save_score(self, score_list):
         """
@@ -63,45 +63,40 @@ class GameEngine:
                 my_best_players_list.append(item)
 
         best_top_3 = my_best_players_list[:3]
-        print("top 3: {}".format(best_top_3))
+        return best_top_3
 
-    def play(self, score_list):
+    def play(self,  guess):
         """
         This functions run the game logic
         :param score_list: list - This is the score previusly stored or a empty list to star to track scored of the game
         :return: None
         """
-        player = input("Please enter your name: ")
         secret = 22
-        attempts = 0
+        self.attempts += 1
+        score_list = self.read_score()
 
-        while True:
-            guess = int(input("Guess the secret number (between 1 and 30): "))
-            attempts += 1
+        if guess == secret:
+            score_data = {"attempts": self.attempts,
+                          "date": str(datetime.datetime.now())}
 
-            if guess == secret:
-                print("You've guessed it - congratulations! It's number " + str(secret))
-                print("Attempts needed: " + str(attempts))
+            score_list.append(score_data)
+            self.save_score(score_list=score_list)
+            message = self.show_max_score(score_list)
+            return message
 
-                score_data = {"attempts": attempts,
-                              "player": player,
-                              "date": str(datetime.datetime.now())}
+        elif guess > secret:
+            message = "Your guess is not correct... try something smaller"
+            return message
 
-                score_list.append(score_data)
-                self.save_score(score_list=score_list)
-                break
-
-            elif guess > secret:
-                print("Your guess is not correct... try something smaller")
-            elif guess < secret:
-                print("Your guess is not correct... try something bigger")
-
+        elif guess < secret:
+            message = "Your guess is not correct... try something bigger"
+            return message
 
 ##############################################################################################
 # Game starts
-engine = GameEngine()
-score_list = engine.read_score()
-engine.show_max_score(score_list)
-engine.play(score_list)
+# engine = GameEngine()
+# score_list = engine.read_score()
+# engine.show_max_score(score_list)
+# engine.play(score_list)
 
 ##############################################################################################
